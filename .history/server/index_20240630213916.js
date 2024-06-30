@@ -1,1 +1,0 @@
-#server setup will be initited soon.
