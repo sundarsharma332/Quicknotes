@@ -26,7 +26,7 @@
     <nav class="bg-primary dark:bg-gray-800 text-white p-4">
         <div class="container mx-auto flex justify-between items-center">
             <a href="#" class="text-2xl font-bold">QuickNotes</a>
-            <div class="hidden lg:flex items-center space-x-4">
+            <div class="flex items-center space-x-4">
                 <a href="#" onclick="showModal('privacy-policy')" class="hover:text-gray-200">Privacy Policy</a>
                 <a href="#" onclick="showModal('terms-of-use')" class="hover:text-gray-200">Terms of Use</a>
                 <a href="#" onclick="showModal('faq')" class="hover:text-gray-200">FAQs</a>
@@ -34,26 +34,11 @@
                     <span class="material-icons">light_mode</span>
                 </button>
             </div>
-            <div class="lg:hidden">
-                <button id="hamburger" class="text-2xl">
-                    <span class="material-icons">menu</span>
-                </button>
-            </div>
-        </div>
-        <div id="mobile-menu" class="lg:hidden hidden mt-4">
-            <a href="#" onclick="showModal('privacy-policy')" class="block px-4 py-2 hover:bg-gray-700">Privacy
-                Policy</a>
-            <a href="#" onclick="showModal('terms-of-use')" class="block px-4 py-2 hover:bg-gray-700">Terms of Use</a>
-            <a href="#" onclick="showModal('faq')" class="block px-4 py-2 hover:bg-gray-700">FAQs</a>
-            <button id="mobile-mode-toggle" aria-label="Toggle dark/light mode"
-                class="block w-full text-left px-4 py-2 hover:bg-gray-700">
-                <span class="material-icons">light_mode</span> Dark Mode
-            </button>
         </div>
     </nav>
 
     <div class="container mx-auto p-6 flex flex-col lg:flex-row">
-        <div class="w-full lg:w-1/2 lg:pr-6 mb-6 lg:mb-0">
+        <div class="lg:w-1/2 lg:pr-6">
             <h1 class="text-3xl font-bold text-center text-primary dark:text-blue-400 mb-8">Simple Note Taking App</h1>
             <form id="note-form" class="mb-8">
                 <div class="mb-4">
@@ -62,6 +47,7 @@
                     <textarea id="note-input" placeholder="Enter your note" required
                         class="w-full p-3 h-40 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:border-gray-700"></textarea>
                 </div>
+
                 <div class="flex justify-between">
                     <button type="submit" id="add-button"
                         class="bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-300">Add
@@ -78,7 +64,7 @@
                 </div>
             </form>
         </div>
-        <div class="w-full lg:w-1/2 lg:pl-6 h-screen overflow-y-auto">
+        <div class="lg:w-1/2 lg:pl-6 h-screen overflow-y-auto">
             <div id="notes-container" class="grid grid-cols-1 gap-6"></div>
             <div id="no-notes" class="text-center p-6 hidden">
                 <img src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127818.jpg?t=st=1719760320~exp=1719763920~hmac=7693655a182e1f7bc9679ca3b9b929560a9c945d796b988ea436e4456043d0f6&w=900"
@@ -137,9 +123,6 @@
         const noNotesMessage = document.getElementById('no-notes');
         const deleteAllButton = document.getElementById('delete-all');
         const modeToggle = document.getElementById('mode-toggle');
-        const mobileModeToggle = document.getElementById('mobile-mode-toggle');
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobile-menu');
         const addButton = document.getElementById('add-button');
         const editButtons = document.getElementById('edit-buttons');
         const saveButton = document.getElementById('save-button');
@@ -239,14 +222,11 @@
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             const icon = modeToggle.querySelector('.material-icons');
-            const mobileIcon = mobileModeToggle.querySelector('.material-icons');
             if (document.documentElement.classList.contains('dark')) {
                 icon.textContent = 'dark_mode';
-                mobileIcon.textContent = 'dark_mode';
                 localStorage.setItem('darkMode', 'enabled');
             } else {
                 icon.textContent = 'light_mode';
-                mobileIcon.textContent = 'light_mode';
                 localStorage.setItem('darkMode', 'disabled');
             }
         }
@@ -262,10 +242,6 @@
             }
         }
 
-        hamburger.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
         noteForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (editingIndex === -1) {
@@ -276,7 +252,6 @@
         });
         deleteAllButton.addEventListener('click', deleteAllNotes);
         modeToggle.addEventListener('click', toggleDarkMode);
-        mobileModeToggle.addEventListener('click', toggleDarkMode);
         saveButton.addEventListener('click', saveEditedNote);
         cancelButton.addEventListener('click', cancelEdit);
 
@@ -297,7 +272,6 @@
         if (localStorage.getItem('darkMode') === 'enabled') {
             document.documentElement.classList.add('dark');
             modeToggle.querySelector('.material-icons').textContent = 'dark_mode';
-            mobileModeToggle.querySelector('.material-icons').textContent = 'dark_mode';
         }
     </script>
 </body>
