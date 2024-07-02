@@ -20,6 +20,13 @@
             }
         }
     </script>
+    <style>
+        .modal-content {
+            max-height: 80vh;
+            /* Adjust this value to control the modal height */
+            overflow-y: auto;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
@@ -137,7 +144,7 @@
                 <h2 class="text-2xl font-bold">Deleted Notes History</h2>
                 <button class="close text-2xl">&times;</button>
             </div>
-            <div id="history-container" class="grid grid-cols-1 gap-6 mb-4"></div>
+            <div id="history-container" class="modal-content grid grid-cols-1 gap-6 mb-4"></div>
             <button id="delete-history"
                 class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300">Delete
                 History</button>
