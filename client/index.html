@@ -30,6 +30,7 @@
                 <a href="#" onclick="showModal('privacy-policy')" class="hover:text-gray-200">Privacy Policy</a>
                 <a href="#" onclick="showModal('terms-of-use')" class="hover:text-gray-200">Terms of Use</a>
                 <a href="#" onclick="showModal('faq')" class="hover:text-gray-200">FAQs</a>
+                <a href="#" onclick="showModal('history')" class="hover:text-gray-200">History</a>
                 <button id="mode-toggle" aria-label="Toggle dark/light mode" class="text-2xl">
                     <span class="material-icons">light_mode</span>
                 </button>
@@ -45,6 +46,7 @@
                 Policy</a>
             <a href="#" onclick="showModal('terms-of-use')" class="block px-4 py-2 hover:bg-gray-700">Terms of Use</a>
             <a href="#" onclick="showModal('faq')" class="block px-4 py-2 hover:bg-gray-700">FAQs</a>
+            <a href="#" onclick="showModal('history')" class="block px-4 py-2 hover:bg-gray-700">History</a>
             <button id="mobile-mode-toggle" aria-label="Toggle dark/light mode"
                 class="block w-full text-left px-4 py-2 hover:bg-gray-700">
                 <span class="material-icons">light_mode</span> Dark Mode
@@ -129,6 +131,19 @@
         </div>
     </div>
 
+    <div id="history" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg max-w-2xl w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">Deleted Notes History</h2>
+                <button class="close text-2xl">&times;</button>
+            </div>
+            <div id="history-container" class="grid grid-cols-1 gap-6 mb-4"></div>
+            <button id="delete-history"
+                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300">Delete
+                History</button>
+        </div>
+    </div>
+
     <script>
         const noteForm = document.getElementById('note-form');
         const titleInput = document.getElementById('title-input');
@@ -144,12 +159,19 @@
         const editButtons = document.getElementById('edit-buttons');
         const saveButton = document.getElementById('save-button');
         const cancelButton = document.getElementById('cancel-button');
+        const historyContainer = document.getElementById('history-container');
+        const deleteHistoryButton = document.getElementById('delete-history');
 
         let notes = JSON.parse(localStorage.getItem('notes')) || [];
+        let deletedNotes = JSON.parse(localStorage.getItem('deletedNotes')) || [];
         let editingIndex = -1;
 
         function saveNotes() {
             localStorage.setItem('notes', JSON.stringify(notes));
+        }
+
+        function saveDeletedNotes() {
+            localStorage.setItem('deletedNotes', JSON.stringify(deletedNotes));
         }
 
         function renderNotes() {
@@ -172,6 +194,27 @@
                         </div>
                     `;
                     notesContainer.appendChild(noteElement);
+                });
+            }
+        }
+
+        function renderDeletedNotes() {
+            historyContainer.innerHTML = '';
+            if (deletedNotes.length === 0) {
+                historyContainer.innerHTML = '<p class="text-center">No deleted notes.</p>';
+            } else {
+                deletedNotes.forEach((note, index) => {
+                    const noteElement = document.createElement('div');
+                    noteElement.className = 'bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md';
+                    noteElement.innerHTML = `
+                        <h3 class="font-bold mb-2">${note.title || 'No Title'}</h3>
+                        <p class="mb-4">${note.content}</p>
+                        <div class="flex justify-end space-x-2">
+                            <button onclick="restoreNote(${index})" class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition-colors duration-300">Restore</button>
+                            <button onclick="permanentlyDeleteNote(${index})" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition-colors duration-300">Delete</button>
+                        </div>
+                    `;
+                    historyContainer.appendChild(noteElement);
                 });
             }
         }
@@ -222,17 +265,46 @@
 
         function deleteNote(index) {
             if (confirm('Are you sure you want to delete this note?')) {
+                deletedNotes.push(notes[index]);
                 notes.splice(index, 1);
                 saveNotes();
+                saveDeletedNotes();
                 renderNotes();
+            }
+        }
+
+        function restoreNote(index) {
+            notes.push(deletedNotes[index]);
+            deletedNotes.splice(index, 1);
+            saveNotes();
+            saveDeletedNotes();
+            renderNotes();
+            renderDeletedNotes();
+        }
+
+        function permanentlyDeleteNote(index) {
+            if (confirm('Are you sure you want to permanently delete this note?')) {
+                deletedNotes.splice(index, 1);
+                saveDeletedNotes();
+                renderDeletedNotes();
             }
         }
 
         function deleteAllNotes() {
             if (confirm('Are you sure you want to delete all notes?')) {
+                notes.forEach(note => deletedNotes.push(note));
                 notes = [];
                 saveNotes();
+                saveDeletedNotes();
                 renderNotes();
+            }
+        }
+
+        function deleteAllHistory() {
+            if (confirm('Are you sure you want to delete all history?')) {
+                deletedNotes = [];
+                saveDeletedNotes();
+                renderDeletedNotes();
             }
         }
 
@@ -253,6 +325,9 @@
 
         function showModal(modalId) {
             document.getElementById(modalId).classList.remove('hidden');
+            if (modalId === 'history') {
+                renderDeletedNotes();
+            }
         }
 
         function closeModals() {
@@ -275,6 +350,7 @@
             }
         });
         deleteAllButton.addEventListener('click', deleteAllNotes);
+        deleteHistoryButton.addEventListener('click', deleteAllHistory);
         modeToggle.addEventListener('click', toggleDarkMode);
         mobileModeToggle.addEventListener('click', toggleDarkMode);
         saveButton.addEventListener('click', saveEditedNote);
