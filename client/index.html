@@ -132,7 +132,7 @@
     </div>
 
     <div id="history" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg max-w-2xl w-full">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg max-w-4xl w-full">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-bold">Deleted Notes History</h2>
                 <button class="close text-2xl">&times;</button>
@@ -188,7 +188,9 @@
                     noteElement.innerHTML = `
                         <h3 class="font-bold mb-2">${note.title || 'No Title'}</h3>
                         <p class="mb-4">${note.content}</p>
-                        <div class="flex justify-end space-x-2">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Created at: ${new Date(note.createdAt).toLocaleString()}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Last updated at: ${new Date(note.updatedAt).toLocaleString()}</p>
+                        <div class="flex justify-end space-x-2 mt-2">
                             <button onclick="editNote(${index})" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition-colors duration-300">Edit</button>
                             <button onclick="deleteNote(${index})" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition-colors duration-300">Delete</button>
                         </div>
@@ -209,7 +211,11 @@
                     noteElement.innerHTML = `
                         <h3 class="font-bold mb-2">${note.title || 'No Title'}</h3>
                         <p class="mb-4">${note.content}</p>
-                        <div class="flex justify-end space-x-2">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Created at: ${new Date(note.createdAt).toLocaleString()}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Last updated at: ${new Date(note.updatedAt).toLocaleString()}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Deleted at: ${new Date(note.deletedAt).toLocaleString()}</p>
+                        ${note.restoredAt ? `<p class="text-sm text-gray-500 dark:text-gray-400">Restored at: ${new Date(note.restoredAt).toLocaleString()}</p>` : ''}
+                        <div class="flex justify-end space-x-2 mt-2">
                             <button onclick="restoreNote(${index})" class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition-colors duration-300">Restore</button>
                             <button onclick="permanentlyDeleteNote(${index})" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition-colors duration-300">Delete</button>
                         </div>
@@ -222,11 +228,12 @@
         function addNote() {
             const titleText = titleInput.value.trim();
             const noteText = noteInput.value.trim();
+            const timestamp = new Date().toISOString();
             if (noteText) {
                 if (notes.length >= 40) {
                     alert('Maximum of 40 notes allowed. Please delete some notes to add new ones.');
                 } else {
-                    notes.push({ title: titleText, content: noteText });
+                    notes.push({ title: titleText, content: noteText, createdAt: timestamp, updatedAt: timestamp });
                     saveNotes();
                     renderNotes();
                     titleInput.value = '';
@@ -247,8 +254,11 @@
         function saveEditedNote() {
             const titleText = titleInput.value.trim();
             const noteText = noteInput.value.trim();
+            const timestamp = new Date().toISOString();
             if (noteText) {
-                notes[editingIndex] = { title: titleText, content: noteText };
+                notes[editingIndex].title = titleText;
+                notes[editingIndex].content = noteText;
+                notes[editingIndex].updatedAt = timestamp;
                 saveNotes();
                 renderNotes();
                 cancelEdit();
@@ -265,6 +275,7 @@
 
         function deleteNote(index) {
             if (confirm('Are you sure you want to delete this note?')) {
+                notes[index].deletedAt = new Date().toISOString();
                 deletedNotes.push(notes[index]);
                 notes.splice(index, 1);
                 saveNotes();
@@ -274,7 +285,9 @@
         }
 
         function restoreNote(index) {
-            notes.push(deletedNotes[index]);
+            const restoredNote = deletedNotes[index];
+            restoredNote.restoredAt = new Date().toISOString();
+            notes.push(restoredNote);
             deletedNotes.splice(index, 1);
             saveNotes();
             saveDeletedNotes();
@@ -292,7 +305,10 @@
 
         function deleteAllNotes() {
             if (confirm('Are you sure you want to delete all notes?')) {
-                notes.forEach(note => deletedNotes.push(note));
+                notes.forEach(note => {
+                    note.deletedAt = new Date().toISOString();
+                    deletedNotes.push(note);
+                });
                 notes = [];
                 saveNotes();
                 saveDeletedNotes();
