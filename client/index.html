@@ -38,6 +38,11 @@
                 <a href="#" onclick="showModal('terms-of-use')" class="hover:text-gray-200">Terms of Use</a>
                 <a href="#" onclick="showModal('faq')" class="hover:text-gray-200">FAQs</a>
                 <a href="#" onclick="showModal('history')" class="hover:text-gray-200">History</a>
+                <a href="https://github.com/sundarsharma332/Quicknotes" target="_blank"
+                    class="hover:text-gray-200 flex items-center">
+                    <span class="material-icons">code</span> GitHub
+                </a>
+                <a href="#" onclick="showModal('developer-info')" class="hover:text-gray-200">Developer Info</a>
                 <button id="mode-toggle" aria-label="Toggle dark/light mode" class="text-2xl">
                     <span class="material-icons">light_mode</span>
                 </button>
@@ -54,6 +59,12 @@
             <a href="#" onclick="showModal('terms-of-use')" class="block px-4 py-2 hover:bg-gray-700">Terms of Use</a>
             <a href="#" onclick="showModal('faq')" class="block px-4 py-2 hover:bg-gray-700">FAQs</a>
             <a href="#" onclick="showModal('history')" class="block px-4 py-2 hover:bg-gray-700">History</a>
+            <a href="https://github.com/sundarsharma332/Quicknotes" target="_blank"
+                class="block px-4 py-2 hover:bg-gray-700 flex items-center">
+                <span class="material-icons">code</span> GitHub
+            </a>
+            <a href="#" onclick="showModal('developer-info')" class="block px-4 py-2 hover:bg-gray-700">Developer
+                Info</a>
             <button id="mobile-mode-toggle" aria-label="Toggle dark/light mode"
                 class="block w-full text-left px-4 py-2 hover:bg-gray-700">
                 <span class="material-icons">light_mode</span> Dark Mode
@@ -148,6 +159,27 @@
             <button id="delete-history"
                 class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300">Delete
                 History</button>
+        </div>
+    </div>
+
+    <div id="developer-info" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg max-w-2xl w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">Developer Info</h2>
+                <button class="close text-2xl">&times;</button>
+            </div>
+            <div class="text-center mb-4">
+                <img src="https://media.licdn.com/dms/image/D4D03AQFAeTO1sgHN6w/profile-displayphoto-shrink_800_800/0/1699305610210?e=1725494400&v=beta&t=FuutJqGvkaWhXxrGmceHY0pXDVBmlpWuyNHOXw4hdvo"
+                    alt="Sundar Raj Sharma" class="w-32 h-32 rounded-full mx-auto mb-4">
+                <h3 class="text-xl font-bold">Sundar Raj Sharma</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Educational AI Integration Specialist & Founder</p>
+                <a href="https://www.linkedin.com/in/sundar-raj-sharma-1a837b169/" target="_blank"
+                    class="block mt-2 text-blue-500 hover:underline">LinkedIn Profile</a>
+                <p class="mt-2">Email: <a href="mailto:srsuiuxdesign@gmail.com"
+                        class="text-blue-500 hover:underline">srsuiuxdesign@gmail.com</a></p>
+                <p class="mt-1">Email: <a href="mailto:sundar.sharma@juniorit.ai"
+                        class="text-blue-500 hover:underline">sundar.sharma@juniorit.ai</a></p>
+            </div>
         </div>
     </div>
 
